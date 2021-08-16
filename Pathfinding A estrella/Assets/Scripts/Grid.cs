@@ -15,6 +15,9 @@ public class Grid : MonoBehaviour
     int gridSizeX; //Nos dice el numero de cuadros que caben en el eje X
     int gridSizeZ; //Nos dice el número de cuadros que caben en el eje Z. 
 
+    //Variable que sólo sirve para ver el camino y sólo el camino en el gizmos
+    public bool onlyDisplayPathGizmos;
+
     public List<Node> path;
 
     private void Start()
@@ -27,6 +30,14 @@ public class Grid : MonoBehaviour
         gridSizeZ = Mathf.RoundToInt(gridWorldSize.z / nodeDiameter);
 
         CreateGrid();
+    }
+
+    public int MaxSize
+    {
+        get
+        {
+            return gridSizeX * gridSizeZ;
+        }
     }
 
     //Este método crea el grid a partir de las medidas y número de nodos estimados previamente en el Start.
@@ -84,28 +95,44 @@ public class Grid : MonoBehaviour
         //Una vez dibujado el gizmo, se cambian las medidas del gridWorldSize en el editor de Unity.
         Gizmos.DrawWireCube(transform.position, gridWorldSize);
 
-        //Se dibujan cuadritos representando cada nodo del grid.
-        if(grid != null)
+        //Si está activa la opción en el editor, sólo se activa el gizmos del camino
+        if (onlyDisplayPathGizmos)
         {
-            foreach(Node n in grid)
+            if (path != null)
             {
-                //Se determina el color del cuadro, dependiendo de si se puede caminar por el cuador o no.
-                if(n.walkable)
+                foreach (Node n in path)
                 {
-                    Gizmos.color = Color.white;
-                    //El cuadro del jugador tiene un color distinto al resto.
-                    if(path.Contains(n))
-                    {
-                        Gizmos.color = Color.cyan;
-                    }
+                    Gizmos.color = Color.cyan;
+                    Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - 0.1f));
                 }
-                else
-                {
-                    Gizmos.color = Color.red;
-                }
+            }
+        }
+        else
+        {
 
-                //Se dibuja el cuadro en la posición de cada cuadtrito, con cada lado igual a 1 menos un pequeño espacio entre cubos.
-                Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - 0.1f));
+            //Se dibujan cuadritos representando cada nodo del grid.
+            if (grid != null)
+            {
+                foreach (Node n in grid)
+                {
+                    //Se determina el color del cuadro, dependiendo de si se puede caminar por el cuador o no.
+                    if (n.walkable)
+                    {
+                        Gizmos.color = Color.white;
+                        //El cuadro del jugador tiene un color distinto al resto.
+                        if (path.Contains(n))
+                        {
+                            Gizmos.color = Color.cyan;
+                        }
+                    }
+                    else
+                    {
+                        Gizmos.color = Color.red;
+                    }
+
+                    //Se dibuja el cuadro en la posición de cada cuadtrito, con cada lado igual a 1 menos un pequeño espacio entre cubos.
+                    Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - 0.1f));
+                }
             }
         }
     }

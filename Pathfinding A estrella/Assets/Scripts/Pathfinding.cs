@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Diagnostics;
 
 public class Pathfinding : MonoBehaviour
 {
@@ -19,11 +20,20 @@ public class Pathfinding : MonoBehaviour
 
     private void Update()
     {
-        FindPath(seeker.position, target.position);
+        //sólo se busa el path en el frame en el que se oprime un botón
+        if(Input.GetButtonDown("Jump"))
+        {
+            FindPath(seeker.position, target.position);
+        }
+
     }
 
     void FindPath(Vector3 startPos, Vector3 targetPos)
     {
+        //PROVISIONAL###############Se crea un medidor para ver el cambio en eficiencia del heap
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+
         //Se encuentran los nodos inicial y objetivo
         Node startNode = grid.NodeFromWorldPosition(startPos);
         Node targetNode = grid.NodeFromWorldPosition(targetPos);
@@ -49,6 +59,10 @@ public class Pathfinding : MonoBehaviour
 
             if(currentNode == targetNode)
             {
+                //PROVISIONAL###############Se crea un medidor para ver el cambio en eficiencia del heap
+                sw.Stop();
+                print("Path found: " + sw.ElapsedMilliseconds + " ms");
+
                 RetracePath(startNode, targetNode);
                 return;
             }
