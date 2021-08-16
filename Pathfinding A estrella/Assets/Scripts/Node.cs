@@ -17,6 +17,7 @@ public class Node : IHeapItem<Node>
     public int gCost; //Costo del camino transcurrido hasta este nodo
     public int hCost; //Estimación del costo restante.
     public Node parent;
+    int heapIndex;
 
 
     public Node(bool _walkable, Vector3 _worldPosition, int _gridX, int _gridZ)
@@ -40,11 +41,11 @@ public class Node : IHeapItem<Node>
     {
         get
         {
-            return HeapIndex;
+            return heapIndex;
         }
         set
         {
-            HeapIndex = value;
+            heapIndex = value;
         }
     }
 
