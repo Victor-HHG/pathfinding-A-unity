@@ -16,11 +16,9 @@ public class Grid : MonoBehaviour
     int gridSizeZ; //Nos dice el número de cuadros que caben en el eje Z. 
 
     //Variable que sólo sirve para ver el camino y sólo el camino en el gizmos
-    public bool onlyDisplayPathGizmos;
+    public bool displayGridGizmos;
 
-    public List<Node> path;
-
-    private void Start()
+    private void Awake()
     {
         nodeDiameter = nodeRadius * 2;
         //Se calcula el número de cuadros que caben en el grid dividiendo lo que mide el grid entre el diametro del nodo (o lado del cuadrito).
@@ -95,23 +93,8 @@ public class Grid : MonoBehaviour
         //Una vez dibujado el gizmo, se cambian las medidas del gridWorldSize en el editor de Unity.
         Gizmos.DrawWireCube(transform.position, gridWorldSize);
 
-        //Si está activa la opción en el editor, sólo se activa el gizmos del camino
-        if (onlyDisplayPathGizmos)
-        {
-            if (path != null)
-            {
-                foreach (Node n in path)
-                {
-                    Gizmos.color = Color.cyan;
-                    Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - 0.1f));
-                }
-            }
-        }
-        else
-        {
-
-            //Se dibujan cuadritos representando cada nodo del grid.
-            if (grid != null)
+             //Se dibujan cuadritos representando cada nodo del grid.
+            if (grid != null && displayGridGizmos)
             {
                 foreach (Node n in grid)
                 {
@@ -119,11 +102,6 @@ public class Grid : MonoBehaviour
                     if (n.walkable)
                     {
                         Gizmos.color = Color.white;
-                        //El cuadro del jugador tiene un color distinto al resto.
-                        if (path.Contains(n))
-                        {
-                            Gizmos.color = Color.cyan;
-                        }
                     }
                     else
                     {
@@ -134,7 +112,6 @@ public class Grid : MonoBehaviour
                     Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - 0.1f));
                 }
             }
-        }
     }
 
     //Método para encontrar los nodos vecinos de un nodo
